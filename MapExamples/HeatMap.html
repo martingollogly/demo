@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+   html, body, #map_canvas { margin: 0; padding: 0; height: 100%; }
+   .InfoWindow {
+         background: #000;
+      }
+</style>
+<script
+   src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=visualization">
+</script>
+<script>
+
+
+/**
+ *"type":"Feature","properties":{
+ *"mag":2.7,
+ *"place":"12km NE of San Simeon, California",
+ *"time":"1366593606400",
+ *"updated":"1366621846497",
+ *"tz":-420,
+ *"url":"http://earthquake.usgs.gov/earthquakes/eventpage/nc71975035",
+ *"felt":3,"cdi":2,"mmi":null,"alert":null,
+ *"status":"AUTOMATIC",
+ *"tsunami":null,"sig":"113","net":"nc",
+ *"code":"71975035",
+ *"ids":",nc71975035,",
+ *"sources":",nc,",
+ *"types":",dyfi,focal-mechanism,general-link,geoserve,nearby-cities,origin,scitech-link,",
+ *"nst":null,"dmin":"0.03593261","rms":"0.15","gap":"46.8","magnitudeType":"Md"},
+ *"geometry":{"type":"Point","coordinates":[-121.1042,35.7297,6.9]},"id":"nc71975035"},
+ */
+
+var map;
+
+function initialize() {
+   var mapOptions = {
+     zoom: 2,
+     center: new google.maps.LatLng(2.8,-187.3),
+     mapTypeId: google.maps.MapTypeId.TERRAIN
+   };
+
+   map = new google.maps.Map(document.getElementById('map_canvas'),
+      mapOptions);
+
+   // Create a <script> tag and set the USGS URL as the source.
+   var script = document.createElement('script');
+   script.src = 'http://earthquake.usgs.gov/earthquakes/feed/geojsonp/2.5/week';
+
+   document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+// Loop through the results array and place a marker for each set of coordinates.
+
+window.eqfeed_callback = function(results) {
+   for (var i = 0; i < results.features.length; i++) {
+      var earthquake = results.features[i];
+      var coords = earthquake.geometry.coordinates;
+      var latLng = new google.maps.LatLng(coords[1],coords[0]);
+      addMarker(latLng, earthquake, map);
+   }
+}
+
+function addMarker(latLng, earthquake, map){
+
+    var marker = new google.maps.Marker({
+         position: latLng,
+         map: map,
+         icon: getCircle(earthquake.properties.mag)
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+    var d = new Date();
+    var date = new Date(earthquake.properties.time*1);
+
+    google.maps.event.addListener(marker, 'click', function() {
+  	   infowindow.setContent("<B>Place</B> :"+earthquake.properties.place+"<BR>"+
+  	                         "<B>Status</B>: "+earthquake.properties.status+"<BR>"+
+  	                         "<B>Date</B>: "+date+"<BR>"+
+  	                         "<B>Magnitude</B>: "+earthquake.properties.mag);
+
+       infowindow.setContent("<B>Place</B> :"+earthquake.properties.place+"<BR>"+
+                             "<iframe class=\"youtube-player\" type=\"text/html\" width=\"380\" height=\"240\" src=\"http://www.youtube.com/embed/4Y-62Ti5_6s?rel=0\" frameborder=\"0\"></iframe>");
+
+  	   infowindow.open(map,marker);
+	});
+}
+
+function getCircle(magnitude) {
+   return {
+     path: google.maps.SymbolPath.CIRCLE,
+     fillColor: 'red',
+     fillOpacity: .2,
+     scale: Math.pow(2, magnitude) / Math.PI,
+     strokeColor: 'white',
+     strokeWeight: .5
+   };
+ }
+
+</script>
+</head>
+
+<body onload="initialize()">
+  <div id="map_canvas"></div>
+</body>
+</html>
