@@ -1,0 +1,20 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Open Space Tutorial - Example 1</title>
+<script type="text/javascript" src="http://openspace.ordnancesurvey.co.uk/osmapapi/openspace.js?key=YOUR_KEY_HERE"></script>
+</head>
+<body onload="init()">
+<script type="text/javascript">
+    var osMap;
+    function init()
+    {
+        osMap = new OpenSpace.Map('map');
+
+        osMap.setCenter(new OpenSpace.MapPoint(438760, 114760), 10);
+
+    }
+</script>
+<h1>Displaying a marker on a map</h1>
+<div id="map" style="width: 500px; height: 300px; border: 1px solid black;"></div>
+</body>
+</html>
