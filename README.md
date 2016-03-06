@@ -3,6 +3,7 @@ demo
 
 Repository for HTML5 Demo Apps
 
+[![CLA assistant](https://cla-assistant.io/readme/badge/martingollogly/demo)](https://cla-assistant.io/martingollogly/demo)
 
 Node JS Examples
 
